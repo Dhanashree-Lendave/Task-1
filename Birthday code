@@ -1,0 +1,86 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+
+struct Birthday {
+    std::string name;
+    int birthMonth;
+    int birthDay;
+    int birthYear;
+};
+
+void displayBirthdayList(const std::vector<Birthday>& birthdays) {
+    std::cout << "Birthday List:\n";
+    for (const auto& entry : birthdays) {
+        std::cout << entry.name << ": " << entry.birthMonth << "/"
+                  << entry.birthDay << "/" << entry.birthYear << std::endl;
+    }
+}
+
+int searchBirthday(const std::vector<Birthday>& birthdays, const std::string& searchName) {
+    auto it = std::find_if(birthdays.begin(), birthdays.end(),
+                           [searchName](const Birthday& b) { return b.name == searchName; });
+
+    if (it != birthdays.end()) {
+        return std::distance(birthdays.begin(), it);
+    } else {
+        return -1;
+    }
+}
+
+void displayMonthlyBirthdays(const std::vector<Birthday>& birthdays, int month) {
+    std::cout << "\nBirthdays in Month " << month << ":\n";
+    for (const auto& entry : birthdays) {
+        if (entry.birthMonth == month) {
+            std::cout << entry.name << ": " << entry.birthMonth << "/"
+                      << entry.birthDay << "/" << entry.birthYear << std::endl;
+        }
+    }
+}
+
+int main() {
+    std::vector<Birthday> birthdays;
+
+    // Create/Edit birthdays
+    for (int i = 0; i < 5; ++i) {
+        Birthday entry;
+        std::cout << "Enter details for loved one " << i + 1 << ":\n";
+        std::cout << "Name: ";
+        std::getline(std::cin >> std::ws, entry.name);
+        std::cout << "Birth month (1-12): ";
+        std::cin >> entry.birthMonth;
+        std::cout << "Birth day: ";
+        std::cin >> entry.birthDay;
+        std::cout << "Birth year: ";
+        std::cin >> entry.birthYear;
+
+        birthdays.push_back(entry);
+    }
+
+    // Display all birthdays
+    displayBirthdayList(birthdays);
+
+    // Search option
+    std::string searchName;
+    std::cout << "\nEnter a name to search: ";
+    std::getline(std::cin >> std::ws, searchName);
+
+    int index = searchBirthday(birthdays, searchName);
+
+    if (index != -1) {
+        std::cout << "Birthday found:\n";
+        displayBirthdayList({birthdays[index]});
+    } else {
+        std::cout << "Birthday not found.\n";
+    }
+
+    // Display monthly birthdays
+    int searchMonth;
+    std::cout << "\nEnter a month to display birthdays: ";
+    std::cin >> searchMonth;
+
+    displayMonthlyBirthdays(birthdays, searchMonth);
+
+    return 0;
+}
